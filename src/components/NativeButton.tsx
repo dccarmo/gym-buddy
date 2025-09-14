@@ -7,11 +7,11 @@ type Props = Omit<PressableProps, "children"> & {
   glassProps?: LiquidGlassViewProps;
 };
 
-export const NativeButton = ({
+export function NativeButton({
   children,
   glassProps,
   ...pressableProps
-}: Props) => {
+}: Props) {
   if (Platform.OS === "ios") {
     return (
       <Pressable {...pressableProps}>
@@ -35,4 +35,4 @@ export const NativeButton = ({
       {children}
     </Pressable>
   );
-};
+}
