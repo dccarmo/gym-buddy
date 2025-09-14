@@ -1,20 +1,18 @@
 import { LiquidGlassView } from "@callstack/liquid-glass";
 import Feather from "@expo/vector-icons/Feather";
-import { Stack } from "expo-router";
+import { Link } from "expo-router";
 import React from "react";
 import { Platform, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 
 export default function Screen() {
+  
   return (
     <SafeAreaView style={styles.container}>
-      <Stack.Screen
-        options={{
-          header: () => null,
-        }}
-      />
-      <AddButton onPress={() => {}} />
+      <Link href="/routines/new" asChild>
+        <AddButton />
+      </Link>
     </SafeAreaView>
   );
 }
@@ -26,7 +24,7 @@ const styles = StyleSheet.create({
 });
 
 interface AddButtonProps {
-  onPress: () => void;
+  onPress?: () => void;
 }
 
 function AddButton({ onPress }: AddButtonProps) {

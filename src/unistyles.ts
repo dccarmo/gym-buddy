@@ -3,7 +3,9 @@ import { StyleSheet } from "react-native-unistyles";
 export const lightTheme = {
   colors: {
     white: "white",
+    foreground: "black",
     primary: "#00a6f4",
+    background: "#F2F2F7",
   },
 };
 
