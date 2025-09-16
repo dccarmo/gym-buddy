@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.gym-buddy"
+      "bundleIdentifier": "com.diogocarmo.gymbuddy"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.gymbuddy"
+      "package": "com.diogocarmo.gymbuddy"
     },
     "web": {
       "output": "static",

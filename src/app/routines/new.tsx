@@ -1,4 +1,5 @@
 import { HeaderButton } from "@/components/HeaderButton";
+import { useRoutineStore } from "@/store";
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigation } from "expo-router";
@@ -32,11 +33,14 @@ export default function Screen() {
 
   const navigation = useNavigation();
 
+  const newRoutine = useRoutineStore((state) => state.newRoutine);
+
   const onSubmit = React.useCallback(
     (data: FormData) => {
+      newRoutine(data.title);
       navigation.goBack();
     },
-    [navigation]
+    [navigation, newRoutine]
   );
 
   React.useEffect(() => {
