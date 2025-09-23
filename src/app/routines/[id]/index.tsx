@@ -11,19 +11,8 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import {
-  FlatList,
-  Platform,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import {
-  StyleSheet,
-  UnistylesRuntime,
-  UnistylesValues,
-} from "react-native-unistyles";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 
 export default function Screen() {
   const theme = UnistylesRuntime.getTheme();
@@ -188,36 +177,21 @@ function WorkoutDayItem({ item, onSaveName }: WorkoutDayItemProps) {
 }
 
 const routineItemStyles = StyleSheet.create((theme) => ({
-  container: {
-    backgroundColor: theme.colors.blue[200],
-    marginHorizontal: 20,
-    padding: 20,
-    ...Platform.select<UnistylesValues>({
-      ios: {
-        borderRadius: 25,
-      },
-      android: {
-        borderRadius: 10,
-      },
-    }),
-  },
+  container: styleByPlatform({
+    shared: {
+      backgroundColor: theme.colors.blue[200],
+      marginHorizontal: 20,
+      padding: 20,
+    },
+    ios: {
+      borderRadius: 25,
+    },
+    android: {
+      borderRadius: 10,
+    },
+  }),
   nameInput: {
     fontSize: 20,
   },
-  // container: styleByPlatform({
-  //   shared: {
-  //     backgroundColor: theme.colors.blue[200],
-  //     marginHorizontal: 20,
-  //     padding: 20,
-  //   },
-  //   ios: {
-  //     borderRadius: 25,
-  //   },
-  //   android: {
-  //     borderRadius: 10,
-  //   },
-  // }),
-  // nameInput: {
-  //   fontSize: 20,
-  // },
-}));
+})
+);

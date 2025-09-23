@@ -1,3 +1,4 @@
+import { getExercisesFromText } from "@/anthropic";
 import { HeaderButton } from "@/components/HeaderButton";
 import { TextInput } from "@/components/Input";
 import { NativePressable } from "@/components/NativePressable";
@@ -11,16 +12,16 @@ import { Link, Stack, useNavigation } from "expo-router";
 import React from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
-    Platform,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
-import { z } from "zod";
+import * as z from "zod";
 
-const exerciseSchema = z.object({
+const workdayExerciseSchema = z.object({
   name: z
     .string("Exercise name is required")
     .min(1, "Exercise name is required")
@@ -52,7 +53,7 @@ const schema = z.object({
     .min(1, "Name is required")
     .max(100, "Name must be less than 100 characters"),
   exercises: z
-    .array(exerciseSchema)
+    .array(workdayExerciseSchema)
     .min(1, "At least one exercise is required"),
 });
 
@@ -103,6 +104,7 @@ export default function Screen() {
 
       data.exercises.forEach((exerciseData, index) => {
         const exercise = newExercise(exerciseData.name);
+
         newWorkoutDayExercise(
           workoutDay.id,
           exercise.id,
@@ -128,18 +130,22 @@ export default function Screen() {
   );
 
   const appendExerciseFromImage = React.useCallback(async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    let imagePickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
       quality: 1,
     });
 
-    if (!result.canceled) {
-      const text = await OCR.recognizeText(result.assets[0].uri);
+    if (!imagePickerResult.canceled) {
+      const imageText = await OCR.recognizeText(
+        imagePickerResult.assets[0].uri
+      );
 
-      console.log("text", text);
+      const { exercises } = await getExercisesFromText(imageText);
+
+      exercises.forEach((exercise) => appendExercise(exercise));
     }
-  }, []);
+  }, [appendExercise]);
 
   return (
     <>
