@@ -1,0 +1,19 @@
+diff --git a/lib/typescript/src/index.d.ts b/lib/typescript/src/index.d.ts
+index 5273254ec98f8ae8999738741f19c4e1ae95ea58..6d93bf30b68b649078010e6fa7c2f27d58231435 100644
+--- a/lib/typescript/src/index.d.ts
++++ b/lib/typescript/src/index.d.ts
+@@ -1,8 +1,8 @@
+-export { StyleSheet, UnistylesRuntime, StatusBar, NavigationBar } from './specs';
+-export { mq } from './mq';
+-export type { UnistylesThemes, UnistylesBreakpoints } from './global';
+-export { withUnistyles, useUnistyles, createUnistylesElement } from './core';
+-export type { UnistylesVariants, IOSContentSizeCategory, AndroidContentSizeCategory } from './types';
+ export { Display, Hide, ScopedTheme } from './components';
+-export { useServerUnistyles, hydrateServerUnistyles, getServerUnistyles, resetServerUnistyles } from './server';
++export { createUnistylesElement, useUnistyles, withUnistyles } from './core';
++export type { UnistylesBreakpoints, UnistylesThemes } from './global';
++export { mq } from './mq';
++export { getServerUnistyles, hydrateServerUnistyles, resetServerUnistyles, useServerUnistyles } from './server';
++export { NavigationBar, StatusBar, StyleSheet, UnistylesRuntime } from './specs';
++export type { AndroidContentSizeCategory, IOSContentSizeCategory, UnistylesValues, UnistylesVariants } from './types';
+ //# sourceMappingURL=index.d.ts.map

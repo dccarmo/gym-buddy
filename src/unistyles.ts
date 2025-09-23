@@ -1,11 +1,16 @@
 import { StyleSheet } from "react-native-unistyles";
+import { colors } from "./colors";
 
 export const lightTheme = {
   colors: {
-    white: "white",
-    foreground: "black",
-    primary: "#00a6f4",
-    background: "#F2F2F7",
+    ...colors,
+    white: "#ffffff",
+    foreground: "#000000",
+    primary: "#51a2ff",
+    secondary: "#bedbff",
+    background: "#ffffff",
+    secondaryBackground: "#f5f5f5",
+    border: "#e5e5e5",
   },
 };
 

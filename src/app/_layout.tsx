@@ -7,14 +7,10 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen
           name="index"
-          options={{
-            header: () => null,
-          }}
         />
         <Stack.Screen
-          name="routines/new"
+          name="workout-day/new"
           options={{
-            title: "New Routine",
             presentation: "modal",
           }}
         />

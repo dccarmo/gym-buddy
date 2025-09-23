@@ -1,33 +1,104 @@
-import { useRoutineStore } from "@/store";
+import { Routine, useRoutineStore } from "@/store";
 import { LiquidGlassView } from "@callstack/liquid-glass";
 import Feather from "@expo/vector-icons/Feather";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import React from "react";
-import { FlatList, Platform, Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Platform, Pressable, Text, View } from "react-native";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 
 export default function Screen() {
-  const routines = useRoutineStore((state) => state.routines);
+  // const routines = useRoutineStore((state) => state.routines);
+  const selectedRoutineId = useRoutineStore((state) => state.selectedRoutineId);
+  // const headerHeight = useHeaderHeight();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={routines}
-        renderItem={({ item }) => <Text>{item.title}</Text>}
-      />
-      <Link href="/routines/new" asChild>
-        <AddButton />
-      </Link>
-    </SafeAreaView>
+    <Redirect
+      href={{
+        pathname: "/routines/[id]",
+        params: { id: selectedRoutineId },
+      }}
+    />
+  );
+
+  // return (
+  //   <>
+  //     <StatusBar />
+  //     <Stack.Screen
+  //       options={headerOptionsByPlatform({
+  //         shared: {
+  //           title: "Routines",
+  //         },
+  //         ios: {
+  //           headerTransparent: true,
+  //         },
+  //         android: {
+  //           headerShadowVisible: false,
+  //         },
+  //       })}
+  //     />
+  //     <FlatList
+  //       style={styles.container}
+  //       contentContainerStyle={styles.contentContainer(headerHeight)}
+  //       data={routines}
+  //       renderItem={({ item }) => <RoutineItem routine={item} />}
+  //       ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+  //     />
+  //     <Link href="/routines/new" asChild>
+  //       <AddButton />
+  //     </Link>
+  //   </>
+  // );
+}
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    backgroundColor: theme.colors.background,
+  },
+  contentContainer: (headerHeight: number) => ({
+    flex: 1,
+    paddingTop: Platform.OS === "ios" ? headerHeight : 20,
+    paddingBottom: 20,
+    backgroundColor: theme.colors.background,
+  }),
+}));
+
+interface RoutineItemProps {
+  routine: Routine;
+}
+
+function RoutineItem({ routine }: RoutineItemProps) {
+  return (
+    <Link
+      href={{
+        pathname: "/routines/[id]",
+        params: { id: routine.id },
+      }}
+      asChild
+    >
+      <Pressable style={routineItemStyles.container}>
+        <Text style={routineItemStyles.title}>{routine.name}</Text>
+      </Pressable>
+    </Link>
   );
 }
 
-const styles = StyleSheet.create({
+const routineItemStyles = StyleSheet.create((theme) => ({
   container: {
-    flex: 1,
+    backgroundColor: theme.colors.blue[100],
+    marginHorizontal: 20,
+    padding: 20,
+    ...(Platform.OS === "ios"
+      ? {
+          borderRadius: 25,
+        }
+      : {
+          borderRadius: 10,
+        }),
   },
-});
+  title: {
+    fontSize: 20,
+  },
+}));
 
 interface AddButtonProps {
   onPress?: () => void;
@@ -89,8 +160,8 @@ const addButtonStyles = StyleSheet.create((theme) => ({
           borderRadius: 25,
         }
       : {
-          width: 56,
-          height: 56,
+          width: 80,
+          height: 80,
           backgroundColor: theme.colors.primary,
           borderRadius: 14,
         }),

@@ -1,11 +1,12 @@
 import { HeaderButton } from "@/components/HeaderButton";
+import { TextInput } from "@/components/Input";
 import { useRoutineStore } from "@/store";
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigation } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, ScrollView, Text, TextInput, View } from "react-native";
+import { Platform, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { z } from "zod";
@@ -87,12 +88,6 @@ export default function Screen() {
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 placeholder="Title"
-                placeholderTextColor={
-                  Platform.OS === "android"
-                    ? theme.colors.foreground
-                    : undefined
-                }
-                style={styles.textInput}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -110,33 +105,14 @@ export default function Screen() {
 const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.secondaryBackground,
   },
   contentContainer: {
+    flex: 1,
     paddingTop: Platform.OS === "ios" ? 64 : 0,
   },
   formContent: {
     padding: 20,
-  },
-  textInput: {
-    height: 70,
-    paddingHorizontal: 20,
-    fontSize: 18,
-    ...(Platform.OS === "ios"
-      ? {
-          backgroundColor: theme.colors.white,
-          borderRadius: 24,
-        }
-      : {
-          borderColor: theme.colors.foreground,
-          borderWidth: 1,
-          borderRadius: 8,
-        }),
-  },
-  textInputMultiline: {
-    height: 120,
-    paddingTop: 20,
-    textAlignVertical: "top",
   },
   errorText: {
     color: "#FF4444",
