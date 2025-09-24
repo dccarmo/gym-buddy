@@ -24,7 +24,7 @@ export async function getExercisesFromText(
   text: string
 ): Promise<z.infer<typeof llmResponseSchema>> {
   const instructions = [
-    "Process the following text obtained via OCR (expect incoherent words) of a gym exercise.",
+    "Process the following text obtained via OCR (expect incoherent words) of gym exercises.",
     "Do not come up with any data that's not part of the following text.",
     "If you don't know, return either empty string or 0.",
     "You can try to infer 'description' and 'muscleGroup' if it's not available.",
@@ -58,9 +58,9 @@ export async function getExercisesFromText(
 
   const llmResult = llmResponseSchema.safeParse(response.content[0].input);
 
-  if (llmResult.success) {
-    return llmResult.data;
-  } else {
+  if (!llmResult.success) {
     throw new Error("Unexpected response from LLM API.");
   }
+
+  return llmResult.data;
 }

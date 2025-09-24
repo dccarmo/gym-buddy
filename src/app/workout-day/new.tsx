@@ -2,7 +2,7 @@ import { getExercisesFromText } from "@/anthropic";
 import { HeaderButton } from "@/components/HeaderButton";
 import { TextInput } from "@/components/Input";
 import { NativePressable } from "@/components/NativePressable";
-import { useRoutineStore } from "@/store";
+import { useStore } from "@/store";
 import { headerOptionsByPlatform, styleByPlatform } from "@/utils/platform";
 import { OCR } from "@dccarmo/react-native-ocr";
 import Feather from "@expo/vector-icons/Feather";
@@ -86,21 +86,16 @@ export default function Screen() {
 
   const navigation = useNavigation();
 
-  const workoutDays = useRoutineStore((state) => state.workoutDays);
-  const newWorkoutDay = useRoutineStore((state) => state.newWorkoutDay);
-  const newExercise = useRoutineStore((state) => state.newExercise);
-  const newWorkoutDayExercise = useRoutineStore(
+  const workoutDays = useStore((state) => state.workoutDays);
+  const newWorkoutDay = useStore((state) => state.newWorkoutDay);
+  const newExercise = useStore((state) => state.newExercise);
+  const newWorkoutDayExercise = useStore(
     (state) => state.newWorkoutDayExercise
   );
-  const selectedRoutineId = useRoutineStore((state) => state.selectedRoutineId);
 
   const onSubmit = React.useCallback(
     (data: FormData) => {
-      const workoutDay = newWorkoutDay(
-        selectedRoutineId,
-        data.name,
-        workoutDays.length + 1
-      );
+      const workoutDay = newWorkoutDay(data.name, workoutDays.length + 1);
 
       data.exercises.forEach((exerciseData, index) => {
         const exercise = newExercise(exerciseData.name);
@@ -124,7 +119,6 @@ export default function Screen() {
       newWorkoutDay,
       newExercise,
       newWorkoutDayExercise,
-      selectedRoutineId,
       workoutDays.length,
     ]
   );

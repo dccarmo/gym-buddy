@@ -1,169 +1,176 @@
-import { Routine, useRoutineStore } from "@/store";
-import { LiquidGlassView } from "@callstack/liquid-glass";
+import { HeaderButton } from "@/components/HeaderButton";
+import { useStore, WorkoutDay } from "@/store";
+import { headerOptionsByPlatform, styleByPlatform } from "@/utils/platform";
 import Feather from "@expo/vector-icons/Feather";
-import { Link, Redirect } from "expo-router";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { Stack, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Platform, Pressable, Text, View } from "react-native";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 export default function Screen() {
-  // const routines = useRoutineStore((state) => state.routines);
-  const selectedRoutineId = useRoutineStore((state) => state.selectedRoutineId);
-  // const headerHeight = useHeaderHeight();
+  const workoutDays = useStore((state) => state.workoutDays);
+
+  const updateWorkoutDay = useStore((state) => state.updateWorkoutDay);
+
+  const headerHeight = useHeaderHeight();
+
+  const router = useRouter();
 
   return (
-    <Redirect
-      href={{
-        pathname: "/routines/[id]",
-        params: { id: selectedRoutineId },
-      }}
-    />
-  );
+    <>
+      <StatusBar />
+      <Stack.Screen
+        options={headerOptionsByPlatform({
+          shared: {
+            title: "My Routine",
+          },
+          ios: {
+            headerTransparent: true,
 
-  // return (
-  //   <>
-  //     <StatusBar />
-  //     <Stack.Screen
-  //       options={headerOptionsByPlatform({
-  //         shared: {
-  //           title: "Routines",
-  //         },
-  //         ios: {
-  //           headerTransparent: true,
-  //         },
-  //         android: {
-  //           headerShadowVisible: false,
-  //         },
-  //       })}
-  //     />
-  //     <FlatList
-  //       style={styles.container}
-  //       contentContainerStyle={styles.contentContainer(headerHeight)}
-  //       data={routines}
-  //       renderItem={({ item }) => <RoutineItem routine={item} />}
-  //       ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-  //     />
-  //     <Link href="/routines/new" asChild>
-  //       <AddButton />
-  //     </Link>
-  //   </>
-  // );
+            headerRight: () => (
+              <HeaderButton onPress={() => {}}>
+                <Feather name="edit" size={22} />
+              </HeaderButton>
+            ),
+          },
+          android: {
+            headerShadowVisible: false,
+            headerRight: () => (
+              <HeaderButton onPress={() => {}} width={50}>
+                <Text style={styles.headerButtonTitle}>Edit</Text>
+              </HeaderButton>
+            ),
+          },
+        })}
+      />
+      <FlatList
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer(headerHeight)}
+        data={workoutDays}
+        renderItem={({ item }) => (
+          <Item
+            item={item}
+            onSaveName={(name) =>
+              updateWorkoutDay(item.id, name, item.dayOrder)
+            }
+          />
+        )}
+        ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+        ListFooterComponent={() => (
+          <View style={styles.footer}>
+            <Pressable
+              onPress={() => {
+                // const workoutDay = newWorkoutDay(
+                //   id,
+                //   "",
+                //   workoutDays.length + 1
+                // );
+
+                router.navigate({
+                  pathname: "/workout-day/new",
+                });
+              }}
+              style={(state) => styles.addButton(state.pressed)}
+            >
+              <Text style={styles.addButtonTitle}>Add Workout Day</Text>
+            </Pressable>
+          </View>
+        )}
+      />
+    </>
+  );
 }
 
 const styles = StyleSheet.create((theme) => ({
   container: {
     backgroundColor: theme.colors.background,
   },
-  contentContainer: (headerHeight: number) => ({
-    flex: 1,
-    paddingTop: Platform.OS === "ios" ? headerHeight : 20,
-    paddingBottom: 20,
-    backgroundColor: theme.colors.background,
-  }),
-}));
-
-interface RoutineItemProps {
-  routine: Routine;
-}
-
-function RoutineItem({ routine }: RoutineItemProps) {
-  return (
-    <Link
-      href={{
-        pathname: "/routines/[id]",
-        params: { id: routine.id },
-      }}
-      asChild
-    >
-      <Pressable style={routineItemStyles.container}>
-        <Text style={routineItemStyles.title}>{routine.name}</Text>
-      </Pressable>
-    </Link>
-  );
-}
-
-const routineItemStyles = StyleSheet.create((theme) => ({
-  container: {
-    backgroundColor: theme.colors.blue[100],
-    marginHorizontal: 20,
-    padding: 20,
-    ...(Platform.OS === "ios"
-      ? {
-          borderRadius: 25,
-        }
-      : {
-          borderRadius: 10,
-        }),
-  },
-  title: {
-    fontSize: 20,
-  },
-}));
-
-interface AddButtonProps {
-  onPress?: () => void;
-}
-
-function AddButton({ onPress }: AddButtonProps) {
-  const theme = UnistylesRuntime.getTheme();
-
-  if (Platform.OS === "ios") {
-    return (
-      <Pressable style={addButtonStyles.container} onPress={onPress}>
-        <LiquidGlassView
-          style={addButtonStyles.content}
-          tintColor={theme.colors.primary}
-          interactive
-        >
-          <Feather name="plus" size={28} color={theme.colors.white} />
-        </LiquidGlassView>
-      </Pressable>
-    );
-  }
-
-  return (
-    <Pressable
-      style={addButtonStyles.container}
-      onPress={onPress}
-      android_ripple={{
-        color: "#FFFFFF50",
-        radius: 56,
-        foreground: true,
-        borderless: false,
-      }}
-    >
-      <View style={addButtonStyles.content}>
-        <Feather name="plus" size={28} color={theme.colors.white} />
-      </View>
-    </Pressable>
-  );
-}
-
-const addButtonStyles = StyleSheet.create((theme) => ({
-  container: {
-    position: "absolute",
-    bottom: 40,
-    right: 40,
-    ...(Platform.OS === "android" && {
-      overflow: "hidden",
-      borderRadius: 14,
-      elevation: 4,
+  contentContainer: (headerHeight: number) =>
+    styleByPlatform({
+      shared: {
+        flex: 1,
+        paddingBottom: 20,
+        backgroundColor: theme.colors.background,
+      },
+      ios: {
+        paddingTop: headerHeight,
+      },
+      android: {
+        paddingTop: 20,
+      },
     }),
+  title: {
+    paddingLeft: 20,
+    fontSize: 38,
+    fontWeight: "bold",
+    marginBottom: 40,
   },
-  content: {
+  footer: {
+    paddingTop: 20,
     alignItems: "center",
     justifyContent: "center",
-    ...(Platform.OS === "ios"
-      ? {
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-        }
-      : {
-          width: 80,
-          height: 80,
-          backgroundColor: theme.colors.primary,
-          borderRadius: 14,
-        }),
+  },
+  addButton: (pressed: boolean) =>
+    styleByPlatform({
+      shared: {},
+      android: {
+        backgroundColor: pressed ? theme.colors.secondaryBackground : undefined,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 256,
+      },
+      ios: {
+        opacity: pressed ? 0.5 : 1,
+      },
+    }),
+  addButtonTitle: styleByPlatform({
+    shared: {
+      color: theme.colors.primary,
+      fontSize: 16,
+    },
+  }),
+  headerButtonTitle: {
+    color: theme.colors.white,
+  },
+}));
+
+interface ItemProps {
+  item: WorkoutDay;
+  onSaveName: (name: string) => void;
+}
+
+function Item({ item, onSaveName }: ItemProps) {
+  const [name, setName] = React.useState(item.name);
+
+  return (
+    <View style={itemStyles.container}>
+      <TextInput
+        style={itemStyles.nameInput}
+        value={name}
+        onChangeText={setName}
+        onBlur={() => onSaveName(name)}
+      />
+    </View>
+  );
+}
+
+const itemStyles = StyleSheet.create((theme) => ({
+  container: styleByPlatform({
+    shared: {
+      backgroundColor: theme.colors.blue[200],
+      marginHorizontal: 20,
+      padding: 20,
+    },
+    ios: {
+      borderRadius: 25,
+    },
+    android: {
+      borderRadius: 10,
+    },
+  }),
+  nameInput: {
+    fontSize: 20,
   },
 }));
