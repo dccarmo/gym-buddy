@@ -1,12 +1,11 @@
-import { HeaderButton } from "@/components/HeaderButton";
+import { NativePressable } from "@/components/NativePressable";
 import { useStore, WorkoutDay } from "@/store";
 import { headerOptionsByPlatform, styleByPlatform } from "@/utils/platform";
-import Feather from "@expo/vector-icons/Feather";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Stack, useRouter } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function Screen() {
@@ -28,20 +27,6 @@ export default function Screen() {
           },
           ios: {
             headerTransparent: true,
-
-            headerRight: () => (
-              <HeaderButton onPress={() => {}}>
-                <Feather name="edit" size={22} />
-              </HeaderButton>
-            ),
-          },
-          android: {
-            headerShadowVisible: false,
-            headerRight: () => (
-              <HeaderButton onPress={() => {}} width={50}>
-                <Text style={styles.headerButtonTitle}>Edit</Text>
-              </HeaderButton>
-            ),
           },
         })}
       />
@@ -62,12 +47,6 @@ export default function Screen() {
           <View style={styles.footer}>
             <Pressable
               onPress={() => {
-                // const workoutDay = newWorkoutDay(
-                //   id,
-                //   "",
-                //   workoutDays.length + 1
-                // );
-
                 router.navigate({
                   pathname: "/workout-day/new",
                 });
@@ -145,14 +124,19 @@ function Item({ item, onSaveName }: ItemProps) {
   const [name, setName] = React.useState(item.name);
 
   return (
-    <View style={itemStyles.container}>
-      <TextInput
-        style={itemStyles.nameInput}
-        value={name}
-        onChangeText={setName}
-        onBlur={() => onSaveName(name)}
-      />
-    </View>
+    <Link
+      href={{
+        pathname: "/workout-day/[id]/edit",
+        params: {
+          id: item.id,
+        },
+      }}
+      asChild
+    >
+      <NativePressable style={itemStyles.container}>
+        <Text style={itemStyles.nameText}>{name}</Text>
+      </NativePressable>
+    </Link>
   );
 }
 
@@ -170,7 +154,7 @@ const itemStyles = StyleSheet.create((theme) => ({
       borderRadius: 10,
     },
   }),
-  nameInput: {
+  nameText: {
     fontSize: 20,
   },
 }));

@@ -63,6 +63,19 @@ interface Actions {
     weight?: number,
     restIntervalSeconds?: number
   ) => WorkoutDayExercise;
+
+  updateWorkoutDayExercise: (
+    id: string,
+    sets: number,
+    minReps?: number,
+    maxReps?: number,
+    weight?: number,
+    restIntervalSeconds?: number
+  ) => WorkoutDayExercise | null;
+
+  deleteWorkoutDayExercise: (id: string) => void;
+
+  clearWorkoutDayExercises: (workoutDayId: string) => void;
 }
 
 type Store = State & Actions;
@@ -172,6 +185,58 @@ export const useStore = create<Store>()(
         });
 
         return newWorkoutDayExercise;
+      },
+
+      updateWorkoutDayExercise(
+        id: string,
+        sets: number,
+        minReps?: number,
+        maxReps?: number,
+        weight?: number,
+        restIntervalSeconds?: number
+      ) {
+        let updatedWorkoutDayExercise: WorkoutDayExercise | null = null;
+
+        set((state) => {
+          return {
+            workoutDayExercises: state.workoutDayExercises.map((exercise) => {
+              if (exercise.id === id) {
+                updatedWorkoutDayExercise = {
+                  ...exercise,
+                  sets,
+                  minReps,
+                  maxReps,
+                  weight,
+                  restIntervalSeconds,
+                };
+                return updatedWorkoutDayExercise;
+              }
+              return exercise;
+            }),
+          };
+        });
+
+        return updatedWorkoutDayExercise;
+      },
+
+      deleteWorkoutDayExercise(id: string) {
+        set((state) => {
+          return {
+            workoutDayExercises: state.workoutDayExercises.filter(
+              (exercise) => exercise.id !== id
+            ),
+          };
+        });
+      },
+
+      clearWorkoutDayExercises(workoutDayId: string) {
+        set((state) => {
+          return {
+            workoutDayExercises: state.workoutDayExercises.filter(
+              (exercise) => exercise.workoutDayId !== workoutDayId
+            ),
+          };
+        });
       },
     }),
     {
